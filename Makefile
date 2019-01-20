@@ -12,6 +12,17 @@ CLIENT_FLAGS := \
 	--go_out=plugins=grpc:./proto/ \
 	--swagger_out=./json-proxy/
 
+dependencies:
+	go get -u google.golang.org/grpc
+	go get -u github.com/golang/protobuf/proto
+	go get -u github.com/golang/protobuf/protoc-gen-go
+	if [ ! -d ".venv" ]; then
+		python3 -m venv --no-site-packages .venv
+	fi
+	source .venv/bin/activate
+	pip install -r python-server/requirements.txt
+
+
 all:
 	mkdir -p json-proxy/config
 	python -m grpc_tools.protoc $(GRPC_FLAGS) \
