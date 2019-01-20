@@ -1,0 +1,33 @@
+version: '3'
+
+services:
+  envoy:
+    image: envoyproxy/envoy:latest
+    volumes:
+      - ./sidecar/envoy.yaml:/etc/envoy/envoy.yaml
+      - ./sidecar/config:/etc/envoy/config/
+    expose:
+      - "8080"
+      - "8001"
+    ports:
+      - "8080:8080"
+      - "8001:8001"
+    # command: /usr/local/bin/envoy -l debug -c /etc/envoy/envoy.yaml
+    # networks:
+    #   - envoymesh
+
+  echo:
+    build: python-server
+    environment: 
+      - GRPC_VERBOSITY=debug
+    volumes:
+      - ./python-server:/app
+    ports:
+     - "9000:9000"
+    # networks:
+    #   envoymesh:
+    #     aliases:
+    #       - echo
+    
+# networks:
+#   envoymesh: {}
